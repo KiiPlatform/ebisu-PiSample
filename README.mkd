@@ -5,15 +5,29 @@ This sample updates temperature from sensor to kii cloud, and waiting command to
 - One Wire Digital Temperature Sensor - [DS18B20](http://osoyoo.com/2017/05/27/ds18b20-temperature-sensor/)
 - [full color RGB LED](http://osoyoo.com/2015/03/24/rgb-color-module-project/)
 
-Note that for the used sensor/led, you can use alternative ones.
-
 ## Setup Pi
 Note: You should be already installed linux OS image to SD card of your Raspberry Pi.
 It is not the scope of this README about how to prepare a SD card.
 
-Login to console of your Pi, and execute the following steps.
+
+### connect to Pi via serial console
+Note that you can connect to Pi with other ways, like usb keyboard and monitor.
+Use serial console is convenient.
+Please check the manual about how to do it, [Using A Console Cable to Troubleshoot](https://learn.adafruit.com/raspberry-pi-zero-creation/give-it-life)
+
+The connected Pins is like the following 2 images:
+![Image 1: connected serial cable](images/raspberry_pi_cable_connection_crop.jpg)
+![Image 2: connected serial cable](images/raspberry_pi_gpio_connection.jpg)
+
+In your ternimal console of PC:
+
+```
+# In mac with 115200 communication bit rate
+screen /dev/cu.SLAB_USBtoUART 115200
+```
 
 ### install the necessary development package to compile source code
+
 - install build-essential
   ```
   sudo apt-get install build-essential
@@ -42,7 +56,7 @@ Login to console of your Pi, and execute the following steps.
 GPIO BCM Pi number is used. Please check this official document about [gpio of Raspberry Pi](https://www.raspberrypi.org/documentation/usage/gpio/)
 
 You can simply refer the GPIO number from the following image:
-![Image about GPIO pin of Pi](gpio-numbers-pi2.png)
+![Image about GPIO pin of Pi](images/gpio-numbers-pi2.png)
 
 ### setup and connect 1-wire digital temperature sensor
 Please check [this tutorial](https://www.waveshare.com/wiki/Raspberry_Pi_Tutorial_Series:_1-Wire_DS18B20_Sensor) to setup Pi.
