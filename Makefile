@@ -17,6 +17,7 @@ INCLUDES += -I/usr/local/opt/openssl/include/
 
 ifdef DEBUG
 	DEBUG_OPT=-DCMAKE_BUILD_TYPE=DEBUG
+	CFLAGS += -g -DDEBUG
 endif
 
 $(SDK_REPO_DIR):
