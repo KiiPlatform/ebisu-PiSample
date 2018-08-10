@@ -41,7 +41,19 @@ clean:
 	rm -fr $(SDK_BUILD_DIR)
 	touch $(TARGET)
 	rm $(TARGET)
+install-sdk:
+	sudo cp $(INSTALL_PATH)/lib/* /usr/lib/; \
+	sudo cp $(INSTALL_PATH)/include/* /usr/include/
 
-all: clean $(TARGET)
+deploy-service: install-sdk
+	sudo cp thing-if-pi-sample.service /etc/systemd/system/; \
+	sudo systemctl start thing-if-pi-sample.service; \
+	sudo systemctl enable thing-if-pi-sample.service
 
-.PHONY: sdk sdk-arm clean app app-debug app-arm app-arm-debug
+stop-service:
+	sudo systemctl stop thing-if-pi-sample.service
+
+start-service:
+	sudo systemctl start thing-if-pi-sample.service
+
+.PHONY: sdk clean app deploy-service start-servie stop-service install-sdk

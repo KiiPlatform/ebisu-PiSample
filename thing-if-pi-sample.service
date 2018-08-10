@@ -1,0 +1,13 @@
+[Unit]
+Description=thing-if SDK sample app service
+After=network-online.target
+
+[Service]
+Type=idle
+ExecStart=/bin/sh /home/pi/thing-if-PiSample/thing-if-pi-sample.sh
+User=root
+Restart=on-failure
+ExecStartPre=/bin/sleep 5
+
+[Install]
+WantedBy=multi-user.target
