@@ -42,7 +42,7 @@ Login to console of your Pi, and execute the following steps.
 GPIO BCM Pi number is used. Please check this official document about [gpio of Raspberry Pi](https://www.raspberrypi.org/documentation/usage/gpio/)
 
 You can simply refer the GPIO number from the following image:
-<image src="https://www.raspberrypi.org/documentation/usage/gpio/images/gpio-numbers-pi2.png" alt="Image about GPIO pin of Pi" title="GPIO pin of Pi">
+![Image about GPIO pin of Pi](gpio-numbers-pi2.png)
 
 ### setup and connect 1-wire digital temperature sensor
 Please check [this tutorial](https://www.waveshare.com/wiki/Raspberry_Pi_Tutorial_Series:_1-Wire_DS18B20_Sensor) to setup Pi.
