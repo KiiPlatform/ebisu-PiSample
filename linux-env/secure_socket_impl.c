@@ -1,5 +1,4 @@
 #include "secure_socket_impl.h"
-
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/uio.h>
@@ -128,13 +127,21 @@ kii_socket_code_t
 {
     ssl_context_t* ctx = (ssl_context_t*)socket_context->app_context;
     int ret = SSL_read(ctx->ssl, buffer, length_to_read);
+    *out_actual_length = 0;
     if (ret > 0) {
         *out_actual_length = ret;
         return KII_SOCKETC_OK;
+    } else if (ret == 0 ) {
+        int ssl_error = SSL_get_error(ctx->ssl, ret);
+        if (ssl_error == SSL_ERROR_ZERO_RETURN) {
+            return KII_SOCKETC_OK;
+        } else if (ssl_error == SSL_ERROR_WANT_READ || ssl_error == SSL_ERROR_WANT_WRITE) {
+            return KII_SOCKETC_AGAIN;
+        } else {
+            return KII_SOCKETC_FAIL;
+        }
+        return KII_SOCKETC_FAIL;
     } else {
-        printf("failed to receive:\n");
-        /* TOOD: could be 0 on success? */
-        *out_actual_length = 0;
         return KII_SOCKETC_FAIL;
     }
 }
