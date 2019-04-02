@@ -14,6 +14,11 @@ It is not the scope of this README about how to prepare a SD card.
 Note that you can connect to Pi with other ways, like usb keyboard and monitor.
 Use serial console is convenient.
 Please check the manual about how to do it, [Using A Console Cable to Troubleshoot](https://learn.adafruit.com/raspberry-pi-zero-creation/give-it-life)
+Additionaly, you need to add the following line to Raspbian boot image `/boot/config.txt`
+
+```
+enable_uart=1
+```
 
 The connected Pins is like the following 2 images:
 ![Image 1: connected serial cable](images/raspberry_pi_cable_connection_crop.jpg)
