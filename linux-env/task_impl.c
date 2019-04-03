@@ -2,10 +2,11 @@
 #include <pthread.h>
 #include <unistd.h>
 
-kii_task_code_t task_create_cb
-    (const char* name,
-     KII_TASK_ENTRY entry,
-     void* param)
+kii_task_code_t task_create_cb(
+        const char* name,
+        KII_TASK_ENTRY entry,
+        void* param,
+        void* userdata)
 {
     int ret;
     pthread_t pthid;
@@ -22,7 +23,7 @@ kii_task_code_t task_create_cb
     }
 }
 
-void delay_ms_cb(unsigned int msec)
+void delay_ms_cb(unsigned int msec, void* userdata)
 {
     usleep(msec * 1000);
 }

@@ -10,10 +10,12 @@ extern "C" {
 kii_task_code_t task_create_cb
     (const char* name,
      KII_TASK_ENTRY entry,
-     void* param);
+     void* param,
+     void* userdata);
 
 void delay_ms_cb
-    (unsigned int msec);
+    (unsigned int msec,
+     void* userdata);
 
 #ifdef __cplusplus
 }
