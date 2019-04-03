@@ -12,6 +12,9 @@
 #include <unistd.h>
 #include "sys_cb_impl.h"
 #include "pi_control.h"
+#include <stdatomic.h>
+#include <signal.h>
+#include <stdbool.h>
 
 typedef struct prv_air_conditioner_t {
     kii_bool_t power;
@@ -114,12 +117,9 @@ size_t updater_cb_read(
         buffer,
         length / sizeof(buffer[0]),
         "{\"AirConditionerAlias\":{\"power\":%s\"currentTemperature\":%d}}",
-        (int)air_conditioner.power == (int)KII_JSON_TRUE ? "true," : "false,",
+        (int)air_conditioner.power == (int)JKII_TRUE ? "true," : "false,",
         air_conditioner.temperature
     );
-    if ((*writer)(kii, buf) == KII_FALSE) {
-        return 0;
-    }
     return length;
 }
 
@@ -280,8 +280,6 @@ int main(int argc, char** argv)
     jkii_token_t updater_tokens[256];
     jkii_resource_t updater_resource = {updater_tokens, 256};
 
-    updater_file_context_t updater_file_ctx;
-
     char updater_buff[UPDATER_HTTP_BUFF_SIZE];
     memset(updater_buff, 0x00, sizeof(char) * UPDATER_HTTP_BUFF_SIZE);
     updater_init(
@@ -394,9 +392,9 @@ int main(int argc, char** argv)
             &updater,
             author,
             updater_cb_state_size,
-            &updater_file_ctx,
+            NULL,
             updater_cb_read,
-            &updater_file_ctx);
+            NULL);
 
     bool end = false;
     bool disp_msg = false;

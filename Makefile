@@ -12,7 +12,7 @@ endif
 
 CFLAGS += -Wall -pthread
 
-LIBS = -lssl -lcrypto -lpthread -ltio
+LIBS = -lssl -lcrypto -lpthread -ltio -lwiringPi
 LD_FLAGS = -L$(INSTALL_PATH)/lib
 # On Mac using homebrew.
 LD_FLAGS += -L/usr/local/opt/openssl/lib
@@ -32,7 +32,7 @@ sdk: $(SDK_REPO_DIR)
 	touch $(SDK_BUILD_DIR)
 	rm -r $(SDK_BUILD_DIR)
 	mkdir $(SDK_BUILD_DIR)
-	cd $(SDK_BUILD_DIR) && cmake $(DEBUG_OPT) ../$(SDK_REPO_DIR) && make && make DESTDIR=. install
+	cd $(SDK_BUILD_DIR) && cmake $(DEBUG_OPT) ../$(SDK_REPO_DIR)/tio && make && make DESTDIR=. install
 
 $(TARGET): sdk
 	gcc $(CFLAGS) $(SOURCES) $(LIBS) $(LD_FLAGS) $(INCLUDES) -o $@
