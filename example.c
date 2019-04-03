@@ -57,8 +57,6 @@ static kii_bool_t prv_set_air_conditioner_info(
 }
 
 
-
-
 // Using C11 atomic types.
 atomic_bool term_flag = false;
 atomic_bool handler_terminated = false;
@@ -211,41 +209,47 @@ static tio_bool_t tio_action_handler(
     tio_action_result_data_t* data,
     void* userdata)
 {
-    printf("%.*s: %.*s\n", (int)action->alias_length, action->alias,(int)action->action_name_length, action->action_name);
-    // prv_air_conditioner_t air_conditioner;
-    // char *alias = action->alias;
-    // char *action_name = action->action_name;
-    // char *action_params;
-    // printf("alias=%s, action name=%s, action params=%s\n",
-    //         alias, action_name, action_params);
+    prv_air_conditioner_t air_conditioner;
+    char alias[action->alias_length+1];
+    char action_name[action->action_name_length + 1];
+    memset(alias, 0, sizeof(alias));
+    memset(action_name, 0, sizeof(action_name));
+    strncpy(alias, action->alias, action->alias_length);
+    strncpy(action_name, action->action_name, action->action_name_length);
+    printf("%s: %s\n", alias, action_name);
 
-    // if (strcmp(alias, "AirConditionerAlias") != 0 &&
-    //         strcmp(alias, "HumidityAlias") != 0) {
-    //     snprintf(error->err_message, EMESSAGE_SIZE + 1, "invalid alias: %s", alias);
-    //     return KII_FALSE;
-    // }
+    if (strcmp(alias, "AirConditionerAlias") != 0) {
+        strcpy(error->err_message, "invalid alias");
+        return KII_FALSE;
+    }
 
-    // memset(&air_conditioner, 0, sizeof(air_conditioner));
-    // if (prv_get_air_conditioner_info(&air_conditioner) == KII_FALSE) {
-    //     printf("fail to lock.\n");
-    //     strcpy(error, "fail to lock.");
-    //     return KII_FALSE;
-    // }
-    // if (strcmp(action_name, "turnPower") == 0) {
-    //     air_conditioner.power =
-    //         strcmp(action_params, "true") == 0 ? KII_TRUE : KII_FALSE;
-    //     if (air_conditioner.power == KII_TRUE) {
-    //         turnOnLED(0, 50, 0);
-    //     } else {
-    //         turnOffLED();
-    //     }
-    // }
+    memset(&air_conditioner, 0, sizeof(air_conditioner));
+    if (prv_get_air_conditioner_info(&air_conditioner) == KII_FALSE) {
+        printf("fail to lock.\n");
+        strcpy(error->err_message, "fail to lock.");
+        return KII_FALSE;
+    }
+    if (strcmp(action_name, "turnPower") == 0) {
+        if (action->action_value.type == TIO_TYPE_BOOLEAN) {
+            air_conditioner.power = action->action_value.param.bool_value;
+            if (air_conditioner.power == KII_TRUE) {
+                turnOnLED(0, 50, 0);
+            } else {
+                turnOffLED();
+            }
+        } else {
+            printf("invalid value.");
+            strcpy(error->err_message, "invalid value");
+            return KII_FALSE;
+        }
 
-    // if (prv_set_air_conditioner_info(&air_conditioner) == KII_FALSE) {
-    //     printf("fail to unlock.\n");
-    //     return KII_FALSE;
-    // }
-    // return KII_TRUE;
+    }
+
+    if (prv_set_air_conditioner_info(&air_conditioner) == KII_FALSE) {
+        printf("fail to unlock.\n");
+        return KII_FALSE;
+    }
+    return KII_TRUE;
 }
 
 static void print_help() {
