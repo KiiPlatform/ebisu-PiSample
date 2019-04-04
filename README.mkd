@@ -1,4 +1,4 @@
-This is a sample application for thing-if SDK running on Raspberry Pi.
+This is a sample application for IoT SDK: [ebisu](https://github.com/KiiPlatform/ebisu) running on Raspberry Pi.
 This sample updates temperature from sensor to kii cloud, and waiting command to turn on/off led.
 ## Used Hardware
 - Raspberry Pi Zero W Rev 1.1 (confirmed)
