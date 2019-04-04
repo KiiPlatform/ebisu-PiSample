@@ -118,7 +118,7 @@ size_t updater_cb_read(
         (int)air_conditioner.power == (int)JKII_TRUE ? "true," : "false,",
         air_conditioner.temperature
     );
-    return length;
+    return 0;
 }
 
 tio_bool_t pushed_message_callback(
@@ -262,6 +262,9 @@ static void print_help() {
 
 int main(int argc, char** argv)
 {
+    // setting up wiringPi
+    initLEDPins();
+
     char* subc = argv[1];
 
     // Setup Signal handler. (Ctrl-C)
