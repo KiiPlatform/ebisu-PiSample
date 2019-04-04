@@ -1,10 +1,18 @@
+SDK_REPO_DIR=ebisu
+
 SDK_BUILD_DIR=build-sdk
-SDK_REPO_DIR=thing-if-ThingSDK
 SDK_PREFIX=usr/local
 INSTALL_PATH=$(SDK_BUILD_DIR)/$(SDK_PREFIX)
 
-CFLAGS += -Wall -pedantic -pthread
-LIBS = -lssl -lcrypto -lpthread -lkiithingifsdk -lwiringPi
+CMAKE_BUILD_TYPE = RELEASE
+ifdef DEBUG
+CFLAGS += -g -DDEBUG
+CMAKE_BUILD_TYPE = DEBUG
+endif
+
+CFLAGS += -Wall -pthread
+
+LIBS = -lssl -lcrypto -lpthread -ltio -lwiringPi
 LD_FLAGS = -L$(INSTALL_PATH)/lib
 # On Mac using homebrew.
 LD_FLAGS += -L/usr/local/opt/openssl/lib
@@ -14,22 +22,17 @@ TARGET = exampleapp
 INCLUDES = -I$(INSTALL_PATH)/include
 # On Mac using homebrew.
 INCLUDES += -I/usr/local/opt/openssl/include/
+RPATH = -Wl,-rpath,$(INSTALL_PATH)/lib
 
-ifdef DEBUG
-	DEBUG_OPT=-DCMAKE_BUILD_TYPE=DEBUG
-	CFLAGS += -g -DDEBUG
-endif
 
 $(SDK_REPO_DIR):
-	git clone git@github.com:KiiPlatform/thing-if-ThingSDK.git
-	cd $(SDK_REPO_DIR) && git submodule init && git submodule update
-	cd $(SDK_REPO_DIR)/kii && git submodule init && git submodule update
+	git clone https://github.com/KiiPlatform/ebisu.git
 
 sdk: $(SDK_REPO_DIR)
 	touch $(SDK_BUILD_DIR)
 	rm -r $(SDK_BUILD_DIR)
 	mkdir $(SDK_BUILD_DIR)
-	cd $(SDK_BUILD_DIR) && cmake $(DEBUG_OPT) ../$(SDK_REPO_DIR) && make && make DESTDIR=. install
+	cd $(SDK_BUILD_DIR) && cmake $(DEBUG_OPT) ../$(SDK_REPO_DIR)/tio && make && make DESTDIR=. install
 
 $(TARGET): sdk
 	gcc $(CFLAGS) $(SOURCES) $(LIBS) $(LD_FLAGS) $(INCLUDES) -o $@
