@@ -92,10 +92,14 @@ void sig_handler(int sig, siginfo_t *info, void *ctx) {
     term_flag = 1;
 }
 
+typedef struct {
+    size_t max_size;
+    size_t read_size;
+} updater_context_t;
+
 size_t updater_cb_state_size(void* userdata)
 {
-    prv_air_conditioner_t air_conditioner;
-    return sizeof(air_conditioner);
+    return 1; // so that TIO_CB_READ will be invoked
 }
 
 size_t updater_cb_read(
@@ -111,14 +115,17 @@ size_t updater_cb_read(
         return 0;
     }
 
-    snprintf(
-        buffer,
-        length / sizeof(buffer[0]),
+    char state[100];
+    sprintf(
+        state,
         "{\"AirConditionerAlias\":{\"power\":%s\"currentTemperature\":%d}}",
         (int)air_conditioner.power == (int)JKII_TRUE ? "true," : "false,",
-        air_conditioner.temperature
-    );
-    return 0;
+        air_conditioner.temperature);
+
+    updater_context_t* ctx = (updater_context_t*)userdata;
+    size_t read_size = sprintf(buffer, "%.*s", size, &state[ctx->read_size]);
+    ctx->read_size += read_size;
+    return read_size;
 }
 
 tio_bool_t pushed_message_callback(
@@ -279,6 +286,7 @@ int main(int argc, char** argv)
     }
 
     tio_updater_t updater;
+    updater_context_t updater_ctx;
 
     socket_context_t updater_http_ctx;
     updater_http_ctx.to_recv = TO_RECV_SEC;
@@ -399,9 +407,9 @@ int main(int argc, char** argv)
             &updater,
             author,
             updater_cb_state_size,
-            NULL,
+            &updater_ctx,
             updater_cb_read,
-            NULL);
+            &updater_ctx);
 
     bool end = false;
     bool disp_msg = false;
