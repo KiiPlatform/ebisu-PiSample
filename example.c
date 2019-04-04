@@ -99,7 +99,12 @@ typedef struct {
 
 size_t updater_cb_state_size(void* userdata)
 {
-    return 1; // so that TIO_CB_READ will be invoked
+    char max_size_state[] = "{\"AirConditionerAlias\":{\"power\":false\"currentTemperature\":40}}";
+    updater_context_t* ctx = (updater_context_t*)userdata;
+    ctx->max_size = strlen(max_size_state);
+    // need to set it to 0, so that when next time updater will continue to send
+    ctx->read_size = 0;
+    return ctx->max_size;
 }
 
 size_t updater_cb_read(
