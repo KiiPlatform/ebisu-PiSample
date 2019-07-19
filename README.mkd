@@ -9,7 +9,9 @@ This sample updates temperature from sensor to kii cloud, and waiting command to
 Note: You should be already installed linux OS image to SD card of your Raspberry Pi.
 It is not the scope of this README about how to prepare a SD card.
 
-
+### prerequirement
+- prepared a SD card for raspberry pi with installed linux OS (refer: [Installing Images](https://www.raspberrypi.org/documentation/installation/installing-images/))
+- installed driver on host pac for Use serial console (for mac: [Software Installation Mac](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-5-using-a-console-cable/software-installation-mac)
 ### connect to Pi via serial console
 Note that you can connect to Pi with other ways, like usb keyboard and monitor.
 Use serial console is convenient.
